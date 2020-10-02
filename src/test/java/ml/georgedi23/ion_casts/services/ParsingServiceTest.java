@@ -1,6 +1,7 @@
 package ml.georgedi23.ion_casts.services;
 
 import ml.georgedi23.ion_casts.models.Podcast;
+import ml.georgedi23.ion_casts.models.PodcastEpisode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -69,32 +71,32 @@ public class ParsingServiceTest {
 
         // Then
         assertEquals(expected, actual);
-
     }
 
     public InputStream stubXML(){
         String initialString = "<rss xmlns:media=\"http://search.yahoo.com/mrss/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" version=\"2.0\">\n" +
                 "<channel>\n" +
                 "<title>Podcast Title</title>\n" +
-                "<description>\n" +
+                "<description>" +
                 "Podcast description was here." +
                 "</description>\n" +
                 "<image>\n" +
-                "<url>\n" +
+                "<url>" +
                 "https://images.test.fm/test.jpg" +
                 "</url>\n" +
                 "</image>\n" +
                 "<item>\n" +
                 "<title>75: Title is Here</title>\n" +
                 "<link>https://test.com/episode/75</link>\n" +
-                "<description>\n" +
+                "<description>" +
                 "Episode description was here." +
                 "</description>\n" +
                 "<pubDate>Tue, 29 Sep 2020 07:00:00 -0000</pubDate>\n" +
                 "<guid isPermaLink=\"false\">\n" +
                 "</guid>\n" +
                 "<enclosure url=\"https://www.podtrac.com/something.mp3\" length=\"0\" type=\"audio/mpeg\"/>\n" +
-                "</item>";
+                "</item>"+
+                "</channel></rss>";
         return new ByteArrayInputStream(initialString.getBytes());
     }
 
@@ -116,7 +118,7 @@ public class ParsingServiceTest {
     @Test
     public void getPodcastDetailsTest() throws IOException, XMLStreamException {
         // Given
-        String expected = "Podcast Title\n\nPodcast description was here.\n\nhttps://images.test.fm/test.jpg";
+        String expected = "Podcast Title\nPodcast description was here.\nhttps://images.test.fm/test.jpg";
         Mockito.when(testUrl.openStream()).thenReturn(stubXML());
 
         // When
@@ -130,4 +132,56 @@ public class ParsingServiceTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void updateEpisodeWithTagTest() throws IOException, XMLStreamException {
+        //Given
+        String expected = "Podcast Title";
+        PodcastEpisode episode = new PodcastEpisode();
+        Mockito.when(testUrl.openStream()).thenReturn(stubXML());
+
+        //When
+        XMLEventReader reader = parsingService.createXMLReader(testUrl);
+        for(int i = 0; i < 5; i++) reader.nextEvent();
+        parsingService.updateEpisodeWithTag(episode, reader);
+        String actual = episode.getTitle();
+
+        //Then
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void parseSingleEpisodeTest() throws IOException, XMLStreamException {
+        //Given
+        String expected = "Episode description was here.;75: Title is Here;https://www.podtrac.com/something.mp3;\n" +
+                ";Tue, 29 Sep 2020 07:00:00 -0000";
+        Mockito.when(testUrl.openStream()).thenReturn(stubXML());
+
+        //When
+        XMLEventReader reader = parsingService.createXMLReader(testUrl);
+        PodcastEpisode episode = parsingService.parseSingleEpisode(reader);
+        String actual = episode.getDescription() + ";" + episode.getTitle() + ";" + episode.getLink() +
+                ";" + episode.getGuid() + ";" + episode.getPub_date();
+
+        //Then
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void readEpisodeFeedTest() throws IOException, XMLStreamException {
+        //Given
+        String expected = "Episode description was here.;75: Title is Here;https://www.podtrac.com/something.mp3;\n" +
+                ";Tue, 29 Sep 2020 07:00:00 -0000";
+        Mockito.when(testUrl.openStream()).thenReturn(stubXML());
+
+        //When
+        XMLEventReader reader = parsingService.createXMLReader(testUrl);
+        List<PodcastEpisode> episodes = parsingService.readEpisodeFeed(reader);
+        PodcastEpisode episode = episodes.get(0);
+        String actual = episode.getDescription() + ";" + episode.getTitle() + ";" + episode.getLink() +
+                ";" + episode.getGuid() + ";" + episode.getPub_date();
+
+        //Then
+        assertEquals(actual, expected);
+    }
+    //TODO - add tests for edge cases as well as code mitigating
 }
