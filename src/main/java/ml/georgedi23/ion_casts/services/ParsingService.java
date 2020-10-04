@@ -2,6 +2,7 @@ package ml.georgedi23.ion_casts.services;
 
 import ml.georgedi23.ion_casts.models.Podcast;
 import ml.georgedi23.ion_casts.models.PodcastEpisode;
+import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Service
 public class ParsingService {
 
     private final Logger logger;
@@ -149,4 +151,3 @@ public class ParsingService {
         return episode;
     }
 }
-

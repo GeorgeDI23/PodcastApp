@@ -1,5 +1,7 @@
 package ml.georgedi23.ion_casts.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,9 +10,11 @@ public class PodcastEpisode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     @Column(name = "episode_id")
     private Long episode_id;
 
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name="podcast_id", referencedColumnName = "podcast_id")
     private Podcast podcast;
@@ -18,7 +22,7 @@ public class PodcastEpisode {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @Column(name = "link")

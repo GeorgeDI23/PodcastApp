@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -23,12 +24,12 @@ public class PodcastTest {
         defaultPodcast.setImage("http://www.linkToImage.com");
         PodcastEpisode episode = new PodcastEpisode();
         episode.setTitle("TEST");
-        ArrayList<PodcastEpisode> episodeList = new ArrayList<>();
+        List<PodcastEpisode> episodeList = new ArrayList<>();
         episodeList.add(episode);
         defaultPodcast.setPodcastEpisodes(episodeList);
         DownloadedEpisode downloadedEpisode = new DownloadedEpisode();
         downloadedEpisode.setTitle("DOWNLOAD TEST");
-        ArrayList<DownloadedEpisode> downloadedList = new ArrayList<>();
+        List<DownloadedEpisode> downloadedList = new ArrayList<>();
         downloadedList.add(downloadedEpisode);
         defaultPodcast.setDownloadedEpisodes(downloadedList);
     }
@@ -164,7 +165,7 @@ public class PodcastTest {
         String expected = "TEST";
 
         //When
-        ArrayList<PodcastEpisode> actualPodcastEpisodes = defaultPodcast.getPodcastEpisodes();
+        List<PodcastEpisode> actualPodcastEpisodes = defaultPodcast.getPodcastEpisodes();
         String actual = actualPodcastEpisodes.get(0).getTitle();
 
         //Then
@@ -192,7 +193,7 @@ public class PodcastTest {
         String expected = "DOWNLOAD TEST";
 
         //When
-        ArrayList<DownloadedEpisode> actualDownloadedPodcastEpisodes = defaultPodcast.getDownloadedEpisodes();
+        List<DownloadedEpisode> actualDownloadedPodcastEpisodes = defaultPodcast.getDownloadedEpisodes();
         String actual = actualDownloadedPodcastEpisodes.get(0).getTitle();
 
         //Then

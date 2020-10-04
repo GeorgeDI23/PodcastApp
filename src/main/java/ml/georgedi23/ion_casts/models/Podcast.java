@@ -1,7 +1,7 @@
 package ml.georgedi23.ion_casts.models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="podcasts")
@@ -17,17 +17,17 @@ public class Podcast {
     @Column(name = "link")
     private String link;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @Column(name = "image")
     private String image;
 
-    @OneToMany(mappedBy = "podcast_id", cascade = {CascadeType.ALL})
-    private ArrayList<PodcastEpisode> podcastEpisodes;
+    @OneToMany(mappedBy = "podcast", cascade = {CascadeType.ALL})
+    private List<PodcastEpisode> podcastEpisodes;
 
-    @OneToMany(mappedBy = "podcast_id", cascade = {CascadeType.ALL})
-    private ArrayList<DownloadedEpisode> downloadedEpisodes;
+    @OneToMany(mappedBy = "podcast", cascade = {CascadeType.ALL})
+    private List<DownloadedEpisode> downloadedEpisodes;
 
     public Long getPodcast_id() {
         return podcast_id;
@@ -69,19 +69,19 @@ public class Podcast {
         this.image = image;
     }
 
-    public ArrayList<PodcastEpisode> getPodcastEpisodes() {
+    public List<PodcastEpisode> getPodcastEpisodes() {
         return podcastEpisodes;
     }
 
-    public void setPodcastEpisodes(ArrayList<PodcastEpisode> podcastEpisodes) {
+    public void setPodcastEpisodes(List<PodcastEpisode> podcastEpisodes) {
         this.podcastEpisodes = podcastEpisodes;
     }
 
-    public ArrayList<DownloadedEpisode> getDownloadedEpisodes() {
+    public List<DownloadedEpisode> getDownloadedEpisodes() {
         return downloadedEpisodes;
     }
 
-    public void setDownloadedEpisodes(ArrayList<DownloadedEpisode> downloadedEpisodes) {
+    public void setDownloadedEpisodes(List<DownloadedEpisode> downloadedEpisodes) {
         this.downloadedEpisodes = downloadedEpisodes;
     }
 }
